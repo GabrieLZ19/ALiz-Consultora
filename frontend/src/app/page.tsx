@@ -80,13 +80,16 @@ export default function Home() {
       {/* ==========================================================================
          SECCIÓN 1: HERO EDITORIAL CON RETRATO DE DIRECCIÓN
          ========================================================================== */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-28 border-b border-custom/60 relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <ScrollReveal direction="up" className="lg:col-span-8 space-y-8">
+      <section className="max-w-7xl mx-auto px-6 pt-12 md:pt-16 pb-16 lg:pb-28 border-b border-custom/60 relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
+          <ScrollReveal
+            direction="up"
+            className="lg:col-span-8 space-y-6 md:space-y-8"
+          >
             <span className="inline-block px-4 py-1.5 border border-brand-gold/20 rounded-full text-[9px] text-brand-gold uppercase tracking-[0.25em] font-semibold bg-brand-card/40 backdrop-blur-sm shadow-sm transition-colors duration-500 hover:bg-brand-gold/5 cursor-default">
               Firma de Alta Dirección
             </span>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-editorial tracking-wide leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-editorial tracking-wide leading-[1.1]">
               Estrategia{" "}
               <span className="italic text-brand-gold font-light transition-all duration-700 hover:tracking-wide">
                 boutique
@@ -99,7 +102,7 @@ export default function Home() {
           <ScrollReveal
             direction="left"
             delay={200}
-            className="lg:col-span-4 hidden lg:block border border-custom/60 aspect-4/55] rounded-lg p-3 shadow-2xl relative overflow-hidden group bg-brand-card transition-colors duration-700 hover:border-brand-gold/40"
+            className="lg:col-span-4 hidden lg:block border border-custom/60 aspect-4/5 rounded-lg p-3 shadow-2xl relative overflow-hidden group bg-brand-card transition-colors duration-700 hover:border-brand-gold/40"
           >
             <div className="w-full h-full relative rounded-md overflow-hidden bg-brand-bg">
               <Image
@@ -115,7 +118,7 @@ export default function Home() {
           </ScrollReveal>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-16 border-t border-custom/40 mt-16 text-text-muted">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-12 md:pt-16 border-t border-custom/40 mt-12 md:mt-16 text-text-muted">
           <ScrollReveal
             delay={100}
             className="lg:col-span-3 border-l border-brand-gold/40 pl-4 space-y-2 text-[11px] uppercase tracking-wider"
@@ -143,9 +146,12 @@ export default function Home() {
             fundadores expandir su visión de mercado de forma autónoma.
           </ScrollReveal>
 
-          <ScrollReveal delay={300} className="lg:col-span-4 flex items-end">
-            <a href="#contacto">
-              <button className="px-6 py-4 bg-brand-gold text-brand-bg uppercase tracking-widest text-[10px] font-bold rounded-md hover:bg-text-main transition-all duration-1000 transform translate-y-0 hover:-translate-y-0.5 shadow-lg hover:shadow-brand-gold/20 cursor-pointer">
+          <ScrollReveal
+            delay={300}
+            className="lg:col-span-4 flex items-end mt-4 lg:mt-0"
+          >
+            <a href="#contacto" className="w-full sm:w-auto">
+              <button className="w-full px-6 py-4 bg-brand-gold text-brand-bg uppercase tracking-widest text-[10px] font-bold rounded-md hover:bg-text-main transition-all duration-1000 transform translate-y-0 hover:-translate-y-0.5 shadow-lg hover:shadow-brand-gold/20 cursor-pointer">
                 Agendar Sesión de Diagnóstico
               </button>
             </a>
@@ -156,7 +162,7 @@ export default function Home() {
       {/* ==========================================================================
          SECCIÓN 2: BANNER DE CONVERSIÓN DE ALTA GAMA
          ========================================================================== */}
-      <section className="border-b border-custom/60 bg-brand-card/20 py-24 px-6 relative overflow-hidden group">
+      <section className="border-b border-custom/60 bg-brand-card/20 py-16 lg:py-24 px-6 relative overflow-hidden group">
         <div className="absolute inset-0 bg-linear-to-r from-brand-gold/5 via-transparent to-transparent opacity-40 pointer-events-none transition-opacity duration-1000 group-hover:opacity-80" />
         <ScrollReveal
           direction="scale"
@@ -179,7 +185,7 @@ export default function Home() {
           </div>
           <Link
             href="/diagnostico"
-            className="px-8 py-4 bg-brand-gold text-brand-bg text-[10px] uppercase tracking-widest font-bold rounded-md hover:bg-text-main transition-all duration-700 transform translate-y-0 hover:-translate-y-0.5 hover:shadow-brand-gold/20 flex items-center gap-3 cursor-pointer whitespace-nowrap self-start lg:self-auto group/btn"
+            className="w-full sm:w-auto px-8 py-4 bg-brand-gold text-brand-bg text-[10px] uppercase tracking-widest font-bold rounded-md hover:bg-text-main transition-all duration-700 transform translate-y-0 hover:-translate-y-0.5 hover:shadow-brand-gold/20 flex justify-center items-center gap-3 cursor-pointer whitespace-nowrap group/btn"
           >
             Iniciar diagnóstico
             <ArrowRight
@@ -195,9 +201,9 @@ export default function Home() {
          ========================================================================== */}
       <section
         id="estudio"
-        className="max-w-7xl mx-auto px-6 py-28 border-b border-custom/60"
+        className="max-w-7xl mx-auto px-6 py-16 lg:py-28 border-b border-custom/60"
       >
-        <ScrollReveal className="space-y-3 mb-16 max-w-xl">
+        <ScrollReveal className="space-y-3 mb-10 lg:mb-16 max-w-xl">
           <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold-muted font-mono block">
             02. Soluciones In-Company
           </span>
@@ -215,11 +221,11 @@ export default function Home() {
          ========================================================================== */}
       <section
         id="productos"
-        className="max-w-7xl mx-auto px-6 py-28 border-b border-custom/60"
+        className="max-w-7xl mx-auto px-6 py-16 lg:py-28 border-b border-custom/60"
       >
         <ScrollReveal
           direction="left"
-          className="flex flex-col sm:flex-row justify-between sm:items-end gap-6 mb-16"
+          className="flex flex-col sm:flex-row justify-between sm:items-end gap-6 mb-10 lg:mb-16"
         >
           <div className="space-y-3">
             <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold-muted font-mono block">
@@ -252,8 +258,8 @@ export default function Home() {
       {/* ==========================================================================
          SECCIÓN 5: TESTIMONIOS CON AVATARES REALES
          ========================================================================== */}
-      <section className="max-w-7xl mx-auto px-6 py-28 border-b border-custom/60">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <section className="max-w-7xl mx-auto px-6 py-16 lg:py-28 border-b border-custom/60">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           <ScrollReveal className="lg:col-span-4 space-y-3">
             <span className="text-[10px] uppercase tracking-[0.2em] text-brand-gold-muted font-mono flex items-center gap-2">
               <Quote size={12} className="text-brand-gold" /> Críticas &
@@ -264,15 +270,15 @@ export default function Home() {
             </h2>
           </ScrollReveal>
 
-          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
             {MOCK_TESTIMONIALS.map((t, index) => (
               <ScrollReveal key={t.id} delay={index * 150} className="h-full">
-                <div className="h-full border border-custom/60 p-8 bg-brand-card/40 rounded-lg space-y-6 hover:border-brand-gold/30 hover:bg-brand-card/80 transition-all duration-700 group flex flex-col justify-between shadow-lg hover:shadow-2xl">
+                <div className="h-full border border-custom/60 p-6 lg:p-8 bg-brand-card/40 rounded-lg space-y-6 hover:border-brand-gold/30 hover:bg-brand-card/80 transition-all duration-700 group flex flex-col justify-between shadow-lg hover:shadow-2xl">
                   <p className="text-sm font-editorial italic leading-relaxed text-text-main/90 transition-colors duration-500 group-hover:text-text-main">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <div className="pt-5 border-t border-custom/40 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full overflow-hidden border border-custom/60 shadow-md transition-transform duration-700 group-hover:scale-105">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border border-custom/60 shadow-md transition-transform duration-700 group-hover:scale-105 shrink-0">
                       <Image
                         src={t.avatar}
                         alt={t.author}
@@ -281,11 +287,11 @@ export default function Home() {
                         height={40}
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-xs text-text-main font-semibold uppercase group-hover:text-brand-gold transition-colors duration-500">
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-xs text-text-main font-semibold uppercase group-hover:text-brand-gold transition-colors duration-500 truncate">
                         {t.author}
                       </span>
-                      <span className="text-[9px] text-brand-gold-muted font-mono uppercase tracking-widest mt-1">
+                      <span className="text-[9px] text-brand-gold-muted font-mono uppercase tracking-widest mt-1 truncate">
                         {t.role} — {t.company}
                       </span>
                     </div>
@@ -298,50 +304,52 @@ export default function Home() {
       </section>
 
       {/* ==========================================================================
-    SECCIÓN FINAL: AGENDAMIENTO DE SESIÓN DE DIAGNÓSTICO
-    ========================================================================== */}
-      <section id="contacto" className="max-w-7xl mx-auto px-6 py-28">
-        <ScrollReveal className="bg-brand-card/40 border border-custom/60 rounded-2xl p-12 md:p-20 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gold/5 blur-[100px] rounded-full -mr-20 -mt-20" />
+      SECCIÓN FINAL: AGENDAMIENTO DE SESIÓN DE DIAGNÓSTICO
+      ========================================================================== */}
+      <section id="contacto" className="max-w-7xl mx-auto px-6 py-16 lg:py-28">
+        {/* Aquí reducimos el padding en móvil (p-6) y mantenemos el espaciado amplio en desktop (lg:p-20) */}
+        <ScrollReveal className="bg-brand-card/40 border border-custom/60 rounded-2xl p-6 md:p-12 lg:p-20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-brand-gold/5 blur-[100px] rounded-full -mr-10 -mt-10 md:-mr-20 md:-mt-20 pointer-events-none" />
 
-          <div className="grid lg:grid-cols-2 gap-16 relative z-10 items-center">
-            <div className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 relative z-10 items-center">
+            <div className="space-y-4 lg:space-y-6">
               <span className="text-brand-gold font-mono text-[9px] uppercase tracking-[0.25em] font-semibold">
                 Contacto Directo
               </span>
-              <h2 className="text-4xl md:text-5xl font-editorial text-text-main leading-tight">
-                Agendemos tu sesión <br />
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-editorial text-text-main leading-tight">
+                Agendemos tu sesión <br className="hidden md:block" />
                 <span className="italic text-brand-gold font-light">
                   de diagnóstico.
                 </span>
               </h2>
-              <p className="text-sm text-text-muted font-light leading-relaxed max-w-md">
+              <p className="text-xs lg:text-sm text-text-muted font-light leading-relaxed max-w-md">
                 Tu primera sesión es el punto de partida para reordenar tu
                 estructura corporativa. Completa tus datos y nuestro equipo
                 técnico se pondrá en contacto para coordinar la llamada inicial.
               </p>
             </div>
 
+            {/* Formulario responsivo (se quita el padding excesivo interior en móviles) */}
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="space-y-6 bg-brand-bg/40 p-8 rounded-lg border border-custom/40"
+              className="space-y-5 bg-brand-bg/40 p-5 md:p-8 rounded-lg border border-custom/40"
             >
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
                   placeholder="Nombre completo"
-                  className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3 text-xs  placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors"
+                  className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3.5 text-xs text-text-main placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors"
                 />
                 <input
                   type="email"
                   placeholder="Correo corporativo"
-                  className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3 text-xs  placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors"
+                  className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3.5 text-xs text-text-main placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors"
                 />
               </div>
               <textarea
                 placeholder="Describe brevemente el desafío principal de tu empresa"
                 rows={4}
-                className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3 text-xs  placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors resize-none"
+                className="w-full bg-brand-card border border-custom/60 rounded-sm px-4 py-3.5 text-xs text-text-main placeholder-text-muted/50 focus:border-brand-gold outline-none transition-colors resize-none"
               />
               <button className="w-full py-4 bg-brand-gold text-brand-bg uppercase tracking-widest text-[10px] font-bold rounded-sm hover:bg-text-main transition-all duration-500 shadow-xl cursor-pointer flex items-center justify-center gap-2 group">
                 Solicitar agenda

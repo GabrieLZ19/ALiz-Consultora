@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
+
+/* ==========================================================================
+   SISTEMA DE 5 PALETAS DE ALTO IMPACTO EN VIVO
+   ========================================================================== */
+:root {
+  /* 1. ORO NEGRO (DEFAULT) */
+  --color-brand-bg: #0c0a07;
+  --color-brand-card: #14110e;
+  --color-brand-gold: #c5a059;
+  --color-brand-gold-muted: #7a6337;
+  --color-text-main: #efece6;
+  --color-text-muted: #9e9991;
+  --color-border: rgba(255, 255, 255, 0.05);
+  --font-editorial: "Playfair Display", Georgia, serif;
+  --font-sans: "Montserrat", sans-serif;
+}
+
+body.theme-midnight {
+  /* 2. CREMA INSTITUCIONAL */
+  --color-brand-bg: #f4efe3;
+  --color-brand-card: #faf7f0;
+  --color-brand-gold: #967332;
+  --color-brand-gold-muted: #6b5224;
+  --color-text-main: #1c1916;
+  --color-text-muted: #666159;
+  --color-border: rgba(0, 0, 0, 0.07);
+}
+
+body.theme-emerald {
+  /* 3. WALL STREET SUITE */
+  --color-brand-bg: #070b14;
+  --color-brand-card: #0e1524;
+  --color-brand-gold: #e6d2b5;
+  --color-brand-gold-muted: #8f816e;
+  --color-text-main: #f3f4f6;
+  --color-text-muted: #8e9aa8;
+  --color-border: rgba(255, 255, 255, 0.07);
+}
+
+body.theme-nude {
+  /* 4. ATELIER NUDE */
+  --color-brand-bg: #eae3d2;
+  --color-brand-card: #f2ece1;
+  --color-brand-gold: #705d38;
+  --color-brand-gold-muted: #4d3f25;
+  --color-text-main: #24221f;
+  --color-text-muted: #6e6961;
+  --color-border: rgba(0, 0, 0, 0.08);
+}
+
+body.theme-oxford {
+  /* 5. VERDE OXFORD DE LUJO */
+  --color-brand-bg: #080d0c;
+  --color-brand-card: #101917;
+  --color-brand-gold: #d4af37;
+  --color-brand-gold-muted: #5e7068;
+  --color-text-main: #ecefef;
+  --color-text-muted: #82918b;
+  --color-border: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   CONFIGURACIÓN DEL MOTOR DE TAILWIND v4 (ANIMACIONES REGISTRADAS)
+   ========================================================================== */
+@theme {
+  --color-brand-bg: var(--color-brand-bg);
+  --color-brand-card: var(--color-brand-card);
+  --color-brand-gold: var(--color-brand-gold);
+  --color-brand-gold-muted: var(--color-brand-gold-muted);
+  --color-text-main: var(--color-text-main);
+  --color-text-muted: var(--color-text-muted);
+  --color-border-custom: var(--color-border);
+  --font-serif: var(--font-editorial);
+  --font-sans: var(--font-sans);
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-fade-in: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in-up: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility standard-bezier {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   ESTILOS BASE E INYECCIÓN DE TRANSICIONES CROMÁTICAS
+   ========================================================================== */
+html,
+body {
+  background-color: var(--color-brand-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  letter-spacing: 0.03em;
+  /* Transición exclusiva para el cambio de temas */
+  transition:
+    background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+/* 
+  Aplicamos transiciones suaves SOLO a colores y bordes para no romper
+  los transform/opacity del motor de Tailwind (vital para el Carrito y la Home)
+*/
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+button,
+.border-custom {
+  transition-property: color, background-color, border-color;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.border-custom {
+  border-color: var(--color-border);
+}

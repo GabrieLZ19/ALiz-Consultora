@@ -20,87 +20,57 @@ export class EmailService {
       process.env.ADMIN_NOTIFICATION_EMAIL || "narpublisher@gmail.com";
 
     const mailOptions = {
-      from: `"ALiZ Sistema Web" <${process.env.SMTP_USER}>`,
+      from: `"ALiz Sistema Web" <${process.env.SMTP_USER}>`,
       to: adminEmail,
       subject: `NUEVA SOLICITUD WEB: ${leadData.full_name.toUpperCase()} - ${leadData.company_name ? leadData.company_name.toUpperCase() : "SIN EMPRESA"}`,
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
           
-          <!-- CABECERA DE MARCA -->
-          <div style="text-align: center; padding-bottom: 25px; border-b: 1px solid #231e18;">
+          <div style="text-align: center; padding-bottom: 25px; border-bottom: 1px solid #231e18;">
             <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: #c5a059; display: block; margin-bottom: 6px;">
-              ALiZ SOLUCIONES DE NEGOCIOS
+              ALiz SOLUCIONES DE NEGOCIOS
             </span>
             <h1 style="color: #efece6; font-size: 20px; font-weight: 300; letter-spacing: 0.05em; margin: 0;">
               Notificación de Nuevo Prospecto
             </h1>
           </div>
 
-          <!-- TABLA DE INFORMACIÓN -->
           <div style="padding: 25px 0;">
             <table style="width: 100%; color: #efece6; font-size: 13px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid #1a1612;">
                 <td style="padding: 12px 0; color: #9e9991; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; width: 150px;">
                   Nombre Completo
                 </td>
-                <td style="padding: 12px 0; font-weight: 400; color: #efece6;">
+                <td style="padding: 12px 0; font-weight: 400;">
                   ${leadData.full_name}
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid #1a1612;">
                 <td style="padding: 12px 0; color: #9e9991; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em;">
-                  Correo Electrónico
+                  Correo
                 </td>
-                <td style="padding: 12px 0;">
-                  <a href="mailto:${leadData.email}" style="color: #c5a059; text-decoration: none; font-weight: 500;">
-                    ${leadData.email}
-                  </a>
+                <td style="padding: 12px 0; font-weight: 400; color: #c5a059;">
+                  ${leadData.email}
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid #1a1612;">
                 <td style="padding: 12px 0; color: #9e9991; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em;">
-                  Empresa / Razón Social
+                  Teléfono
                 </td>
-                <td style="padding: 12px 0; color: #efece6;">
-                  ${leadData.company_name || "No especificado"}
+                <td style="padding: 12px 0; font-weight: 400;">
+                  ${(leadData as any).phone || "No especificado"}
                 </td>
               </tr>
               <tr style="border-bottom: 1px solid #1a1612;">
                 <td style="padding: 12px 0; color: #9e9991; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em;">
-                  Rango de Empleados
+                  Empresa
                 </td>
-                <td style="padding: 12px 0; color: #efece6;">
-                  ${leadData.employee_range || "No especificado"}
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 12px 0; color: #9e9991; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em;">
-                  Servicio de Interés
-                </td>
-                <td style="padding: 12px 0; color: #c5a059; font-weight: 600;">
-                  ${leadData.service_interest}
+                <td style="padding: 12px 0; font-weight: 400;">
+                  ${leadData.company_name || "No especificada"}
                 </td>
               </tr>
             </table>
           </div>
-
-          <!-- BLOQUE DE DETALLE / MENSAJE DEL CLIENTE -->
-          <div style="background-color: #181512; padding: 20px; border-left: 2px solid #c5a059; margin-top: 10px; border-radius: 2px;">
-            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #c5a059; font-weight: 700; display: block; margin-bottom: 8px;">
-              RETO OPERATIVO / MENSAJE
-            </span>
-            <p style="margin: 0; font-size: 13px; color: #efece6; line-height: 1.6; font-weight: 300; font-style: italic;">
-              "${leadData.message}"
-            </p>
-          </div>
-
-          <!-- PIE DE PÁGINA -->
-          <div style="margin-top: 35px; pt: 20px; border-top: 1px solid #231e18; text-align: center;">
-            <p style="font-size: 10px; uppercase; letter-spacing: 0.2em; color: #9e9991; margin: 0;">
-              SISTEMA DE CONTROL DE LEADS • ALiZ FIRMA BOUTIQUE
-            </p>
-          </div>
-
         </div>
       `,
     };
@@ -109,53 +79,118 @@ export class EmailService {
   }
 
   /**
-   * Envía correo de confirmación de recepción al cliente
+   * Envía confirmación automática de recepción de diagnóstico al usuario
    */
-  static async sendClientConfirmation(clientEmail: string, clientName: string) {
+  static async sendClientLeadConfirmation(email: string, fullName: string) {
     const mailOptions = {
-      from: `"ALiZ Soluciones de Negocios" <${process.env.SMTP_USER}>`,
-      to: clientEmail,
-      subject: "Confirmación de Recepción | ALiZ Soluciones de Negocios",
+      from: `"ALiz Soluciones de Negocios" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Confirmación de Recepción | ALiz Soluciones de Negocios",
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
-          
-          <!-- CABECERA -->
-          <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #231e18;">
+          <div style="text-align: center; padding-bottom: 25px; border-bottom: 1px solid #231e18;">
             <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: #c5a059; display: block; margin-bottom: 6px;">
-              FIRMA DE ALTA DIRECCIÓN
+              ALiz Soluciones de Negocios
             </span>
             <h1 style="color: #efece6; font-size: 22px; font-weight: 300; margin: 0;">
-              ALiZ Soluciones de Negocios
+              Hemos recibido tu solicitud
             </h1>
           </div>
 
-          <!-- CUERPO DEL MENSAJE -->
-          <div style="padding: 30px 0; font-weight: 300; font-size: 14px; line-height: 1.7; color: #efece6;">
-            <p style="margin-top: 0; color: #c5a059; font-weight: 500;">
-              Estimado/a ${clientName},
-            </p>
-            <p style="color: #efece6;">
-              Hemos recibido la información y características operativas de tu empresa de manera satisfactoria.
-            </p>
-            <p style="color: #9e9991;">
-              Nuestro equipo directivo se encuentra evaluando los datos proporcionados para brindarte una respuesta pertinente. Un consultor sénior se pondrá en contacto contigo en un lapso estimado de <strong>24 a 48 horas hábiles</strong>.
-            </p>
+          <div style="padding: 30px 0; font-size: 14px; line-height: 1.6; color: #d6d1ca;">
+            <p>Estimado/a <strong>${fullName}</strong>,</p>
+            <p>Gracias por ponerte en contacto con ALiz. Hemos registrado correctamente tus datos de consulta.</p>
+          </div>
+        </div>
+      `,
+    };
+
+    return await transporter.sendMail(mailOptions);
+  }
+
+  /**
+   * Envía correo de confirmación de cuenta de usuario con diseño editorial ALiz vía Nodemailer
+   */
+  static async sendUserAccountConfirmation(email: string, fullName: string, confirmationLink: string) {
+    const mailOptions = {
+      from: `"ALiz Consultora" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Confirma tu cuenta de usuario | ALiz",
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
+          
+          <div style="text-align: center; padding-bottom: 25px; border-bottom: 1px solid #231e18;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: #c5a059; display: block; margin-bottom: 6px;">
+              ALiz CONSULTORA
+            </span>
+            <h1 style="color: #efece6; font-size: 22px; font-weight: 300; margin: 0;">
+              Confirma tu Correo Electrónico
+            </h1>
           </div>
 
-          <!-- ES LOGAN SOBRIO DE MARCA -->
+          <div style="padding: 30px 0; font-size: 14px; line-height: 1.6; color: #d6d1ca;">
+            <p>Bienvenido/a, <strong>${fullName}</strong>.</p>
+            <p>Para activar tu acceso a la plataforma corporativa ALiz y disfrutar de nuestros infoproductos y herramientas, por favor confirma tu correo electrónico haciendo clic en el siguiente botón:</p>
+            
+            <div style="text-align: center; margin: 35px 0;">
+              <a href="${confirmationLink}" style="background-color: #c5a059; color: #0b0a09; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; padding: 14px 28px; border-radius: 4px; display: inline-block;">
+                Confirmar mi Cuenta
+              </a>
+            </div>
+            
+            <p style="font-size: 11px; color: #9e9991;">Si no creaste esta cuenta, puedes ignorar este mensaje de forma segura.</p>
+          </div>
+
           <div style="background-color: #181512; padding: 20px; text-align: center; border: 1px solid #231e18; border-radius: 2px;">
             <p style="font-size: 11px; color: #c5a059; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 600; margin: 0;">
               "No enseñamos lo que estudiamos. Enseñamos lo que vivimos."
             </p>
           </div>
+        </div>
+      `,
+    };
 
-          <!-- FOOTER -->
-          <div style="margin-top: 30px; text-align: center;">
-            <p style="font-size: 10px; color: #9e9991; text-transform: uppercase; letter-spacing: 0.15em; margin: 0;">
-              Atención remota a nivel nacional en todo México
-            </p>
+    return await transporter.sendMail(mailOptions);
+  }
+
+  /**
+   * Envía correo de recuperación de contraseña vía Nodemailer
+   */
+  static async sendPasswordResetEmail(email: string, resetLink: string) {
+    const mailOptions = {
+      from: `"ALiz Consultora" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Restablece tu contraseña | ALiz",
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
+          
+          <div style="text-align: center; padding-bottom: 25px; border-bottom: 1px solid #231e18;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: #c5a059; display: block; margin-bottom: 6px;">
+              ALiz CONSULTORA
+            </span>
+            <h1 style="color: #efece6; font-size: 22px; font-weight: 300; margin: 0;">
+              Restablecimiento de Contraseña
+            </h1>
           </div>
 
+          <div style="padding: 30px 0; font-size: 14px; line-height: 1.6; color: #d6d1ca;">
+            <p>Hola,</p>
+            <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta ALiz. Haz clic en el botón a continuación para ingresar una nueva contraseña:</p>
+            
+            <div style="text-align: center; margin: 35px 0;">
+              <a href="${resetLink}" style="background-color: #c5a059; color: #0b0a09; text-decoration: none; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; padding: 14px 28px; border-radius: 4px; display: inline-block;">
+                Restablecer Contraseña
+              </a>
+            </div>
+            
+            <p style="font-size: 11px; color: #9e9991;">Si no solicitaste este cambio, ignora este mensaje. El enlace caducará por seguridad.</p>
+          </div>
+
+          <div style="background-color: #181512; padding: 20px; text-align: center; border: 1px solid #231e18; border-radius: 2px;">
+            <p style="font-size: 11px; color: #c5a059; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 600; margin: 0;">
+              "No enseñamos lo que estudiamos. Enseñamos lo que vivimos."
+            </p>
+          </div>
         </div>
       `,
     };

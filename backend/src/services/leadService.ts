@@ -31,7 +31,7 @@ export class LeadService {
     // (Se usa Promise.all en "background" sin el 'await' para que no retrase la respuesta al cliente)
     Promise.all([
       EmailService.sendNewLeadAlertToAdmin(leadData),
-      EmailService.sendClientConfirmation(leadData.email, leadData.full_name),
+      EmailService.sendClientLeadConfirmation(leadData.email, leadData.full_name),
     ]).catch((err) => {
       console.error("Error al enviar notificaciones por correo:", err);
     });

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { AuthService, LoginPayload, RegisterPayload } from "@/services/authService";
+import { notify } from "@/lib/notifications";
 
 interface User {
   id: string;
@@ -59,7 +60,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    refreshUser();
+    const checkHashAndInit = async () => {
+      if (typeof window !== "undefined") {
+        const hash = window.location.hash;
+        if (hash && hash.includes("access_token=")) {
+          const hashParams = new URLSearchParams(hash.substring(1));
+          const accessToken = hashParams.get("access_token");
+
+          if (accessToken) {
+            try {
+              setIsLoading(true);
+              const response = await AuthService.syncOAuthSession(accessToken);
+              if (response.status === "success") {
+                // Limpiar el hash de la URL sin recargar la página
+                window.history.replaceState(null, "", window.location.pathname);
+                await refreshUser();
+                notify.success("¡Bienvenido a ALiZ!", "Sesión iniciada con éxito.");
+                return;
+              }
+            } catch (err: any) {
+              console.error("--> Error capturando hash OAuth:", err);
+            }
+          }
+        }
+      }
+      await refreshUser();
+    };
+
+    checkHashAndInit();
   }, []);
 
   const login = async (payload: LoginPayload) => {

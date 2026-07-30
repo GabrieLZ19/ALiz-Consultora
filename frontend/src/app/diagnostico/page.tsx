@@ -1,188 +1,190 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import { LeadService, CreateLeadPayload } from "@/services/leadService";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import {
-  ArrowLeft,
-  ArrowRight,
-  Activity,
-  CheckCircle,
-  BarChart3,
-  Users,
-  Loader2,
-} from "lucide-react";
+  EMPLOYEE_RANGE_OPTIONS,
+  SERVICE_INTEREST_OPTIONS,
+} from "@/lib/constants";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { notify } from "@/lib/notifications";
 
 export default function DiagnosticoPage() {
-  const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    company_name: "",
+    employee_range: "1-5",
+    service_interest: "diagnostico_360",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-  const handleStepChange = (newStep: number) => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setStep(newStep);
-      setIsAnimating(false);
-    }, 200);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const handleNext = () => {
-    if (step < 3) handleStepChange(step + 1);
-    else {
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setIsSuccess(true);
-      }, 2500);
+    try {
+      const payload: CreateLeadPayload = {
+        full_name: formData.full_name,
+        email: formData.email,
+        company_name: formData.company_name,
+        employee_range: formData.employee_range,
+        service_interest: formData.service_interest as any,
+        message: formData.message,
+      };
+
+      const response = await LeadService.createLead(payload);
+
+      notify.success(
+        "Diagnóstico Solicitado",
+        response.message ||
+          "Diagnóstico solicitado con éxito. Recibirás respuesta en 24-48 hrs."
+      );
+
+      setFormData({
+        full_name: "",
+        email: "",
+        company_name: "",
+        employee_range: "1-5",
+        service_interest: "diagnostico_360",
+        message: "",
+      });
+    } catch (error: any) {
+      notify.error(
+        "Error",
+        error.message || "Ocurrió un error al procesar tu solicitud."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (isSuccess) {
-    return (
-      <main className="min-h-screen flex items-center justify-center p-6 bg-brand-bg transition-colors duration-700">
-        <div className="text-center space-y-6 animate-in zoom-in-95 duration-700 standard-bezier">
-          <div className="w-20 h-20 mx-auto bg-brand-gold/10 rounded-full flex items-center justify-center mb-6 border border-brand-gold/20">
-            <CheckCircle size={32} className="text-brand-gold" />
-          </div>
-          <h2 className="text-4xl font-editorial text-text-main tracking-wide">
-            Auditoría Completada
-          </h2>
-          <p className="text-sm text-text-muted font-light max-w-sm mx-auto">
-            Tu reporte estratégico ha sido procesado. Accede a tu bandeja de
-            entrada corporativa para revisar los resultados.
-          </p>
-          <Link
-            href="/"
-            className="inline-block mt-8 px-8 py-4 bg-brand-gold text-brand-bg text-[10px] uppercase tracking-widest font-bold rounded-md hover:bg-text-main transition-all"
-          >
-            Finalizar Auditoría
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-screen flex flex-col bg-brand-bg transition-colors duration-700">
-      {/* BARRA DE PROGRESO "EDGE-TO-EDGE" */}
-      <div className="h-1.5 w-full bg-brand-bg">
-        <div
-          className="h-full bg-brand-gold transition-all duration-700 ease-out"
-          style={{ width: `${(step / 3) * 100}%` }}
-        />
-      </div>
-
-      {/* HEADER DE NAVEGACIÓN */}
-      <nav className="w-full max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-text-muted hover:text-brand-gold transition-colors"
-        >
-          <ArrowLeft size={12} /> Salir
-        </Link>
-        <span className="text-[9px] text-brand-gold-muted font-mono uppercase tracking-[0.2em]">
-          Fase 0{step} / 03
-        </span>
-      </nav>
-
-      {/* CONTENIDO PRINCIPAL */}
-      <div className="grow flex items-center justify-center p-6">
-        <div
-          className={`w-full max-w-3xl space-y-12 transition-opacity duration-200 ${isAnimating ? "opacity-0" : "opacity-100"}`}
-        >
-          <div className="space-y-4">
-            {step === 1 && <BarChart3 size={32} className="text-brand-gold" />}
-            {step === 2 && <Users size={32} className="text-brand-gold" />}
-            {step === 3 && <Activity size={32} className="text-brand-gold" />}
-
-            <h1 className="text-4xl md:text-6xl font-editorial text-text-main tracking-wide">
-              {step === 1
-                ? "Rango de Facturación"
-                : step === 2
-                  ? "Arquitectura de Equipo"
-                  : "Validación Final"}
-            </h1>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {step === 1 &&
-              [
-                "0 - $500k USD",
-                "$500k - $2M USD",
-                "$2M - $10M USD",
-                "+$10M USD",
-              ].map((opt) => (
-                <button
-                  key={opt}
-                  onClick={handleNext}
-                  className="p-8 border border-custom/60 rounded-md text-[11px] uppercase tracking-widest text-text-main hover:border-brand-gold hover:bg-brand-gold/5 transition-all text-left font-medium cursor-pointer"
-                >
-                  {opt}
-                </button>
-              ))}
-
-            {step === 2 &&
-              [
-                "Alta: Opero el día a día y tomo todas las decisiones.",
-                "Media: Tengo gerentes, pero superviso la ejecución final.",
-                "Baja: El equipo es autónomo, me enfoco en expansión.",
-              ].map((opt) => (
-                <button
-                  key={opt}
-                  onClick={handleNext}
-                  className="md:col-span-2 p-8 border border-custom/60 rounded-md text-[11px] uppercase tracking-widest text-text-main hover:border-brand-gold hover:bg-brand-gold/5 transition-all text-left font-medium cursor-pointer"
-                >
-                  {opt}
-                </button>
-              ))}
-
-            {step === 3 && (
-              <div className="md:col-span-2 space-y-6">
-                <input
-                  type="email"
-                  placeholder="correo@empresa.com"
-                  className="w-full bg-brand-bg border border-custom/60 rounded-md px-6 py-5 text-sm  placeholder-text-muted/40 focus:border-brand-gold focus:outline-none transition-all"
-                />
-                <button
-                  onClick={handleNext}
-                  disabled={isSubmitting}
-                  className="w-full py-5 bg-brand-gold text-brand-bg text-[10px] uppercase tracking-widest font-bold rounded-md hover:bg-text-main transition-all flex justify-center items-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    "Generar Diagnóstico"
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
+    <div className="bg-brand-bg text-text-main py-12 lg:py-20 px-6">
+      <div className="max-w-4xl mx-auto space-y-12">
+        <div className="text-center space-y-4 max-w-2xl mx-auto">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-brand-gold font-mono font-semibold">
+            Sin Costo • Evaluación Personalizada
+          </span>
+          <h1 className="text-4xl font-editorial">
+            Diagnóstico Rápido{" "}
+            <span className="italic text-brand-gold font-light">360°</span>
+          </h1>
+          <p className="text-xs md:text-sm text-text-muted font-light leading-relaxed">
+            Completa este formulario. Nuestro equipo directivo analizará el
+            nivel de madurez y los riesgos operativos de tu empresa, enviándote
+            un informe en 24 a 48 horas.
+          </p>
         </div>
-      </div>
 
-      {/* FOOTER DE NAVEGACIÓN (BOTONES FIJOS) */}
-      <footer className="w-full max-w-7xl mx-auto px-6 py-8 flex justify-between items-center border-t border-custom/40">
-        <button
-          onClick={() => handleStepChange(step - 1)}
-          disabled={step === 1}
-          className={`flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] transition-all ${
-            step === 1
-              ? "opacity-0 cursor-default"
-              : "text-text-muted hover:text-text-main cursor-pointer"
-          }`}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-brand-card/40 border border-custom/60 rounded-2xl p-6 md:p-10 space-y-6"
         >
-          <ArrowLeft size={12} /> Paso Anterior
-        </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase font-mono tracking-widest text-text-muted block">
+                Nombre Completo *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.full_name}
+                onChange={(e) =>
+                  setFormData({ ...formData, full_name: e.target.value })
+                }
+                placeholder="Ej. Carlos Mendoza"
+                className="w-full bg-brand-bg border border-custom/60 rounded px-4 py-3 text-xs text-text-main focus:border-brand-gold outline-none"
+              />
+            </div>
 
-        {step < 3 && (
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase font-mono tracking-widest text-text-muted block">
+                Correo Corporativo *
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                placeholder="carlos@tuempresa.com"
+                className="w-full bg-brand-bg border border-custom/60 rounded px-4 py-3 text-xs text-text-main focus:border-brand-gold outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase font-mono tracking-widest text-text-muted block">
+                Empresa y Giro
+              </label>
+              <input
+                type="text"
+                value={formData.company_name}
+                onChange={(e) =>
+                  setFormData({ ...formData, company_name: e.target.value })
+                }
+                placeholder="Ej. Distribuidora del Norte - Comercio"
+                className="w-full bg-brand-bg border border-custom/60 rounded px-4 py-3 text-xs text-text-main focus:border-brand-gold outline-none"
+              />
+            </div>
+
+            <CustomSelect
+              label="Número de Empleados *"
+              options={EMPLOYEE_RANGE_OPTIONS}
+              value={formData.employee_range}
+              onChange={(val) =>
+                setFormData({ ...formData, employee_range: val })
+              }
+              placeholder="Seleccionar rango"
+            />
+          </div>
+
+          <CustomSelect
+            label="Servicio de Interés *"
+            options={SERVICE_INTEREST_OPTIONS}
+            value={formData.service_interest}
+            onChange={(val) =>
+              setFormData({ ...formData, service_interest: val })
+            }
+            placeholder="Seleccionar servicio"
+          />
+
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase font-mono tracking-widest text-text-muted block">
+              ¿Cuál es el principal problema operativo que deseas resolver? *
+            </label>
+            <textarea
+              required
+              rows={4}
+              value={formData.message}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
+              placeholder="Ej. Tengo alto costo de rotación, problemas con pagos impositivos o falta de control de inventarios..."
+              className="w-full bg-brand-bg border border-custom/60 rounded px-4 py-3 text-xs text-text-main focus:border-brand-gold outline-none resize-none"
+            />
+          </div>
+
           <button
-            onClick={() => handleNext()}
-            className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-brand-gold hover:text-text-main transition-all cursor-pointer"
+            type="submit"
+            disabled={loading}
+            className="w-full py-4 bg-brand-gold text-brand-bg uppercase tracking-widest text-[10px] font-bold rounded hover:bg-text-main transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
-            Saltar al próximo <ArrowRight size={12} />
+            {loading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <>
+                Solicitar Diagnóstico Gratuito <ArrowRight size={13} />
+              </>
+            )}
           </button>
-        )}
-      </footer>
-    </main>
+        </form>
+      </div>
+    </div>
   );
 }

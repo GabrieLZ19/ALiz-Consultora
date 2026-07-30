@@ -65,15 +65,18 @@ export class AuthService {
     return response;
   }
 
-  static async initiateOAuth(provider: "google" | "apple"): Promise<void> {
+  static async initiateOAuth(provider: "google" = "google"): Promise<void> {
+    const redirectUrl = typeof window !== "undefined"
+      ? `${window.location.origin}/login/callback`
+      : "";
     const response = (await api.get(
-      `/auth/oauth-url?provider=${provider}`
+      `/auth/oauth-url?provider=google&redirectTo=${encodeURIComponent(redirectUrl)}`
     )) as unknown as { status: string; data: { url: string } };
 
     if (response.data?.url) {
       window.location.href = response.data.url;
     } else {
-      throw new Error("No se pudo iniciar el flujo de autenticación OAuth.");
+      throw new Error("No se pudo iniciar el flujo de autenticación con Google.");
     }
   }
 

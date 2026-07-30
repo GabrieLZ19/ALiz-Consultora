@@ -21,7 +21,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
-  loginWithOAuth: (provider: "google" | "apple") => Promise<void>;
+  loginWithOAuth: (provider?: "google") => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const loginWithOAuth = async (provider: "google" | "apple") => {
+  const loginWithOAuth = async (provider: "google" = "google") => {
     await AuthService.initiateOAuth(provider);
   };
 

@@ -3,29 +3,30 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import leadRoutes from "./routes/leadRoutes";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
 
-// Middlewares globales
-app.use(express.json()); // Parseo de JSON
-app.use(cors()); // Permitir peticiones de tu frontend
-app.use(helmet()); // Seguridad en cabeceras HTTP
-app.use(morgan("dev")); // Logger de peticiones en consola
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
+app.use(morgan("dev"));
 
-// Ruta de prueba (Healthcheck)
+// Rutas de API
+app.use("/api/leads", leadRoutes);
+app.use("/api/auth", authRoutes);
+
 app.get("/api/health", (req: Request, res: Response) => {
-  res
-    .status(200)
-    .json({
-      status: "success",
-      message: "API de ALiz corriendo perfectamente 🚀",
-    });
+  res.status(200).json({
+    status: "success",
+    message: "API de ALiz corriendo perfectamente 🚀",
+  });
 });
 
-// Inicialización del servidor
 app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });

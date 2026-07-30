@@ -18,7 +18,6 @@
       "onFail": "download"
     }
   },
-  "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.110.7",
     "cors": "^2.8.6",

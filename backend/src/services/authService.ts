@@ -132,22 +132,26 @@ export class AuthService {
     };
   }
 
-  static async getOAuthUrl(provider: "google" | "apple", redirectTo?: string): Promise<string> {
-    const redirectUrl = redirectTo || `${process.env.CLIENT_URL || "http://localhost:3000"}/login/callback`;
+  static async getOAuthUrl(provider: "google", redirectTo?: string): Promise<string> {
+    const defaultOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+    const redirectUrl = redirectTo || `${defaultOrigin}/login/callback`;
+
+    console.log("--> Generando URL de Google OAuth con redirectUrl:", redirectUrl);
+
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider,
+      provider: "google",
       options: {
         redirectTo: redirectUrl,
-        queryParams: provider === "google" ? {
+        queryParams: {
           access_type: "offline",
           prompt: "select_account",
-        } : undefined,
+        },
       },
     });
 
     if (error || !data.url) {
       console.error("--> Error en getOAuthUrl:", error);
-      throw new Error(error?.message || `No se pudo obtener la URL de OAuth para ${provider}`);
+      throw new Error(error?.message || "No se pudo obtener la URL de OAuth para Google.");
     }
 
     return data.url;

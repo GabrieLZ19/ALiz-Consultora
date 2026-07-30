@@ -106,13 +106,13 @@ export class AuthController {
 
   static async getOAuthUrl(req: Request, res: Response): Promise<void> {
     try {
-      const provider = req.query.provider as "google" | "apple";
+      const provider = req.query.provider as "google";
       const redirectTo = req.query.redirectTo as string | undefined;
 
-      if (!provider || (provider !== "google" && provider !== "apple")) {
+      if (!provider || provider !== "google") {
         res.status(400).json({
           status: "error",
-          message: "Proveedor inválido. Debe ser 'google' o 'apple'.",
+          message: "Proveedor inválido. Solo se admite 'google'.",
         });
         return;
       }

@@ -24,3 +24,5 @@ Thumbs.db
 # Excluir assets de diseño y documentación interna
 Identidad Visual/
 *.pdf
+
+.agents/

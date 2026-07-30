@@ -20,16 +20,23 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
-// Interceptor de respuesta desempacando .data
+// Interceptor de respuesta desempacando .data y extrayendo mensaje de error legible
 api.interceptors.response.use(
   (response: AxiosResponse) => response.data,
   (error) => {
+    const serverMessage = error.response?.data?.message;
+    const fallbackMessage =
+      error.message || "Error al procesar la solicitud en el servidor.";
     const message =
-      error.response?.data?.message ||
-      "Error al procesar la solicitud en el servidor.";
+      typeof serverMessage === "string"
+        ? serverMessage
+        : typeof serverMessage === "object"
+        ? JSON.stringify(serverMessage)
+        : fallbackMessage;
+
     return Promise.reject(new Error(message));
-  },
+  }
 );

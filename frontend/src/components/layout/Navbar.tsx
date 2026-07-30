@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Sun,
   Moon,
@@ -16,20 +17,44 @@ import {
   Table,
   Phone,
   Shield,
+  LogOut,
+  UserCheck,
 } from "lucide-react";
 import { useTheme } from "@/lib/themeContext";
 import { useCart } from "@/lib/cartContext";
+import { useAuth } from "@/context/AuthContext";
+import { notify } from "@/lib/notifications";
 
 export const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const { cartCount, setIsCartOpen } = useCart();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const router = useRouter();
+
   const [activeDropdown, setActiveDropdown] = useState<
-    "soluciones" | "consultoria" | null
+    "soluciones" | "consultoria" | "user" | null
   >(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleTheme = () => {
     setTheme(theme === "editorial" ? "midnight" : "editorial");
+  };
+
+  const handleLogout = () => {
+    logout();
+    setActiveDropdown(null);
+    notify.success("Sesión cerrada", "Has cerrado sesión exitosamente.");
+    router.push("/login");
+  };
+
+  // Extraer iniciales para el avatar en caso de no tener foto
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   };
 
   return (
@@ -218,12 +243,81 @@ export const Navbar = () => {
               )}
             </button>
 
-            <Link href="/login">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-card border border-brand-gold/40 text-brand-gold text-[9px] tracking-[0.15em] uppercase rounded-full hover:bg-brand-gold hover:text-brand-bg font-semibold transition-all duration-300">
-                <User size={11} />
-                <span className="hidden md:inline">Acceso</span>
-              </button>
-            </Link>
+            {/* SECCIÓN DE USUARIO: SKELETON EDITORIAL EN CARGA VS AUTENTICADO VS INVITADO */}
+            {isLoading ? (
+              <div className="flex items-center gap-2 py-1 px-2.5 bg-brand-card/40 border border-brand-gold/20 rounded-full animate-pulse">
+                <div className="w-6 h-6 rounded-full bg-brand-gold/20 border border-brand-gold/30 shrink-0" />
+                <div className="w-14 h-2.5 rounded bg-brand-gold/20 hidden md:block" />
+              </div>
+            ) : isAuthenticated && user ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setActiveDropdown("user")}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button className="flex items-center gap-2 py-1 px-2.5 bg-brand-card border border-brand-gold/50 rounded-full hover:border-brand-gold transition-all duration-300 cursor-pointer">
+                  {user.avatar_url ? (
+                    <div className="w-6 h-6 rounded-full overflow-hidden border border-brand-gold/40 shrink-0">
+                      <Image
+                        src={user.avatar_url}
+                        alt={user.full_name}
+                        width={24}
+                        height={24}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-brand-gold/20 border border-brand-gold/50 text-brand-gold text-[9px] font-mono font-bold flex items-center justify-center shrink-0">
+                      {getInitials(user.full_name)}
+                    </div>
+                  )}
+                  <span className="hidden md:inline text-[9px] tracking-widest uppercase font-bold text-text-main max-w-25 truncate">
+                    {user.full_name.split(" ")[0]}
+                  </span>
+                  <ChevronDown size={10} className="text-brand-gold" />
+                </button>
+
+                {/* MENÚ DESPLEGABLE DE MI CUENTA */}
+                {activeDropdown === "user" && (
+                  <div className="absolute top-full right-0 w-56 bg-brand-card border border-custom/60 p-3 space-y-2 shadow-2xl rounded-md animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                    <div className="pb-2 mb-2 border-b border-custom/40 px-1">
+                      <p className="text-[11px] font-semibold text-text-main truncate">
+                        {user.full_name}
+                      </p>
+                      <p className="text-[9px] text-text-muted truncate">
+                        {user.email}
+                      </p>
+                      <span className="inline-block mt-1 px-2 py-0.5 bg-brand-gold/15 text-brand-gold text-[8px] font-mono uppercase font-semibold rounded">
+                        Cliente ALiZ
+                      </span>
+                    </div>
+
+                    <Link
+                      href="/perfil"
+                      className="flex items-center gap-2.5 p-2 hover:bg-brand-gold/10 text-text-muted hover:text-text-main rounded transition-colors text-[10px] font-medium uppercase tracking-wider"
+                    >
+                      <UserCheck size={13} className="text-brand-gold" />
+                      Mi Perfil
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2.5 p-2 hover:bg-red-500/10 text-red-400 hover:text-red-300 rounded transition-colors text-[10px] font-medium uppercase tracking-wider text-left cursor-pointer"
+                    >
+                      <LogOut size={13} />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link href="/login">
+                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-card border border-brand-gold/40 text-brand-gold text-[9px] tracking-[0.15em] uppercase rounded-full hover:bg-brand-gold hover:text-brand-bg font-semibold transition-all duration-300">
+                  <User size={11} />
+                  <span className="hidden md:inline">Acceso</span>
+                </button>
+              </Link>
+            )}
 
             <button
               onClick={() => setIsMobileMenuOpen(true)}
@@ -304,14 +398,17 @@ export const Navbar = () => {
               </Link>
             </div>
           </div>
+
           <div className="border-t border-custom/40 pt-4">
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-2 text-xs uppercase tracking-widest text-brand-gold font-bold"
-            >
-              <User size={14} /> Acceso Clientes
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 text-xs uppercase tracking-widest text-brand-gold font-bold"
+              >
+                <User size={14} /> Acceso Clientes
+              </Link>
+            )}
           </div>
         </div>
       </div>

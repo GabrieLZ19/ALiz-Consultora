@@ -10,6 +10,7 @@ router.post("/login", AuthController.login);
 router.post("/oauth-sync", AuthController.oauthSync);
 router.get("/oauth-url", AuthController.getOAuthUrl);
 router.post("/request-password-reset", AuthController.requestPasswordReset);
+router.post("/reset-password", AuthController.resetPassword);
 
 // Endpoints Protegidos (Requieren Token JWT en Header)
 router.get("/me", requireAuth, AuthController.getMe);

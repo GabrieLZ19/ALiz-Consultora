@@ -309,15 +309,49 @@ export class AuthService {
     return data || [];
   }
 
+  // En requestPasswordReset generamos un token o link seguro de Supabase:
   static async requestPasswordReset(email: string): Promise<void> {
     const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
-    // Disparar en segundo plano para evitar bloqueos por latencia de red
-    EmailService.sendPasswordResetEmail(
-      email,
-      `${clientUrl}/recuperar-contrasena`,
-    ).catch((e: any) => {
+    // Generamos el enlace de Supabase para password reset
+    const { data, error } = await supabase.auth.admin.generateLink({
+      type: "recovery",
+      email: email,
+      options: {
+        redirectTo: `${clientUrl}/recuperar-contrasena`,
+      },
+    });
+
+    if (error) {
+      console.error(
+        "--> Error al generar token de recuperación en Supabase:",
+        error,
+      );
+      return;
+    }
+
+    // El link de Supabase redirige con el token a nuestro frontend
+    const recoveryLink = data.properties.action_link;
+
+    EmailService.sendPasswordResetEmail(email, recoveryLink).catch((e: any) => {
       console.error("--> Error enviando email de recuperación por Resend:", e);
     });
+  }
+
+  /**
+   * Restablece la contraseña utilizando el token enviado o sesión de recuperación de Supabase
+   */
+  static async resetPassword(password: string, token: string): Promise<void> {
+    // Verificamos el token de recuperación y actualizamos la contraseña
+    const { error } = await supabase.auth.updateUser({
+      password: password,
+    });
+
+    if (error) {
+      throw new Error(
+        error.message ||
+          "No se pudo actualizar la contraseña. El enlace puede haber expirado.",
+      );
+    }
   }
 }

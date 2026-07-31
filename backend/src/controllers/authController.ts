@@ -136,7 +136,10 @@ export class AuthController {
     }
   }
 
-  static async requestPasswordReset(req: Request, res: Response): Promise<void> {
+  static async requestPasswordReset(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const { email } = req.body;
 
@@ -152,7 +155,8 @@ export class AuthController {
 
       res.status(200).json({
         status: "success",
-        message: "Si el correo está registrado, se enviará un enlace de recuperación.",
+        message:
+          "Si el correo está registrado, se enviará un enlace de recuperación.",
       });
     } catch (error: any) {
       const errorMsg =
@@ -161,12 +165,13 @@ export class AuthController {
       console.error(
         "❌ Error en AuthController.requestPasswordReset:",
         errorMsg,
-        error
+        error,
       );
 
       res.status(500).json({
         status: "error",
-        message: errorMsg || "Error al solicitar la recuperación de contraseña.",
+        message:
+          errorMsg || "Error al solicitar la recuperación de contraseña.",
       });
     }
   }
@@ -197,7 +202,10 @@ export class AuthController {
     }
   }
 
-  static async updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  static async updateProfile(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
       const userId = req.user.id;
       const { full_name, company_name, phone, avatar_url } = req.body;
@@ -224,7 +232,10 @@ export class AuthController {
     }
   }
 
-  static async getUserLeads(req: AuthenticatedRequest, res: Response): Promise<void> {
+  static async getUserLeads(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
       const email = req.user.email;
       const leads = await AuthService.getUserLeads(email);
@@ -242,5 +253,31 @@ export class AuthController {
       });
     }
   }
-}
 
+  static async resetPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { password, token } = req.body;
+
+      if (!password || password.length < 6) {
+        res.status(400).json({
+          status: "error",
+          message: "La contraseña debe tener al menos 6 caracteres.",
+        });
+        return;
+      }
+
+      await AuthService.resetPassword(password, token);
+
+      res.status(200).json({
+        status: "success",
+        message: "Contraseña actualizada con éxito.",
+      });
+    } catch (error: any) {
+      const errorMsg = error?.message || "Error al actualizar la contraseña.";
+      res.status(400).json({
+        status: "error",
+        message: errorMsg,
+      });
+    }
+  }
+}

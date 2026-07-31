@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,14 +15,34 @@ import {
 import { AuthService } from "@/services/authService";
 import { notify } from "@/lib/notifications";
 
-// 1. Componente que maneja la lógica y los SearchParams
 function RecoverPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Detectar si el usuario viene de hacer clic en el correo
-  const token = searchParams.get("code") || searchParams.get("token") || "";
-  const isResetMode = Boolean(token);
+  const [accessToken, setAccessToken] = useState<string>("");
+  const isResetMode = Boolean(accessToken);
+
+  // Detectar el token tanto en Query Params (?) como en el Hash de Supabase (#)
+  useEffect(() => {
+    // 1. Intentar buscar en Query Params
+    const tokenFromParams =
+      searchParams.get("token") ||
+      searchParams.get("code") ||
+      searchParams.get("access_token");
+
+    // 2. Intentar buscar en el Hash (#access_token=...)
+    let tokenFromHash = "";
+    if (typeof window !== "undefined" && window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      tokenFromHash =
+        hashParams.get("access_token") || hashParams.get("token") || "";
+    }
+
+    const finalToken = tokenFromParams || tokenFromHash;
+    if (finalToken) {
+      setAccessToken(finalToken);
+    }
+  }, [searchParams]);
 
   // Estados Formulario 1: Solicitar Email
   const [email, setEmail] = useState<string>("");
@@ -81,7 +101,7 @@ function RecoverPasswordForm() {
     setIsSubmitting(true);
 
     try {
-      await AuthService.resetPassword(password, token);
+      await AuthService.resetPassword(password, accessToken);
       setIsResetSuccess(true);
       notify.success(
         "¡Éxito!",
@@ -115,7 +135,7 @@ function RecoverPasswordForm() {
             </h1>
             <p className="text-[11px] text-text-muted tracking-wide font-light leading-relaxed">
               Ingresa y confirma tu nueva contraseña para actualizar el acceso a
-              tu cuenta.
+              tu cuenta ALiZ.
             </p>
           </div>
 
@@ -245,11 +265,9 @@ function RecoverPasswordForm() {
   );
 }
 
-// 2. Export principal envuelto en Suspense
 export default function RecoverPasswordPage() {
   return (
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-brand-bg transition-colors duration-700">
-      {/* COLUMNA IZQUIERDA: ATMÓSFERA EDITORIAL */}
       <div className="hidden lg:flex flex-col justify-between p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-brand-card/40 z-0" />
         <Image
@@ -279,7 +297,6 @@ export default function RecoverPasswordPage() {
         </div>
       </div>
 
-      {/* COLUMNA DERECHA: PANEL DINÁMICO CON SUSPENSE */}
       <div className="flex items-center justify-center p-6 md:p-12 relative">
         <Suspense
           fallback={

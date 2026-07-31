@@ -44,7 +44,7 @@ export class AuthService {
   static async login(payload: LoginPayload): Promise<AuthApiResponse> {
     const response = (await api.post(
       "/auth/login",
-      payload
+      payload,
     )) as unknown as AuthApiResponse;
 
     if (response.data?.token) {
@@ -56,7 +56,7 @@ export class AuthService {
   static async register(payload: RegisterPayload): Promise<AuthApiResponse> {
     const response = (await api.post(
       "/auth/register",
-      payload
+      payload,
     )) as unknown as AuthApiResponse;
 
     if (response.data?.token) {
@@ -66,17 +66,20 @@ export class AuthService {
   }
 
   static async initiateOAuth(provider: "google" = "google"): Promise<void> {
-    const redirectUrl = typeof window !== "undefined"
-      ? `${window.location.origin}/login/callback`
-      : "";
+    const redirectUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/login/callback`
+        : "";
     const response = (await api.get(
-      `/auth/oauth-url?provider=google&redirectTo=${encodeURIComponent(redirectUrl)}`
+      `/auth/oauth-url?provider=google&redirectTo=${encodeURIComponent(redirectUrl)}`,
     )) as unknown as { status: string; data: { url: string } };
 
     if (response.data?.url) {
       window.location.href = response.data.url;
     } else {
-      throw new Error("No se pudo iniciar el flujo de autenticación con Google.");
+      throw new Error(
+        "No se pudo iniciar el flujo de autenticación con Google.",
+      );
     }
   }
 
@@ -91,7 +94,9 @@ export class AuthService {
     return response;
   }
 
-  static async updateProfile(payload: UpdateProfilePayload): Promise<{ status: string; message: string; data: any }> {
+  static async updateProfile(
+    payload: UpdateProfilePayload,
+  ): Promise<{ status: string; message: string; data: any }> {
     return (await api.put("/auth/profile", payload)) as unknown as {
       status: string;
       message: string;
@@ -106,9 +111,21 @@ export class AuthService {
     };
   }
 
-  static async requestPasswordReset(email: string): Promise<{ status: string; message: string }> {
+  static async requestPasswordReset(
+    email: string,
+  ): Promise<{ status: string; message: string }> {
     return (await api.post("/auth/request-password-reset", {
       email,
+    })) as unknown as { status: string; message: string };
+  }
+
+  static async resetPassword(
+    password: string,
+    token?: string,
+  ): Promise<{ status: string; message: string }> {
+    return (await api.post("/auth/reset-password", {
+      password,
+      token,
     })) as unknown as { status: string; message: string };
   }
 

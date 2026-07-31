@@ -341,16 +341,35 @@ export class AuthService {
   /**
    * Restablece la contraseña utilizando el token enviado o sesión de recuperación de Supabase
    */
+
   static async resetPassword(password: string, token: string): Promise<void> {
-    // Verificamos el token de recuperación y actualizamos la contraseña
-    const { error } = await supabase.auth.updateUser({
+    if (!token) {
+      throw new Error("El token de recuperación es inválido o ha expirado.");
+    }
+
+    // 1. Establecer la sesión temporal con el access_token que viene del hash del correo
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.setSession({
+        access_token: token,
+        refresh_token: "", // En flujos de recuperación no se requiere refresh_token
+      });
+
+    if (sessionError) {
+      console.error("--> Error en setSession:", sessionError);
+      throw new Error(
+        "La sesión de recuperación ha expirado. Por favor solicita un nuevo correo.",
+      );
+    }
+
+    // 2. Actualizar la contraseña del usuario autenticado en la sesión
+    const { error: updateError } = await supabase.auth.updateUser({
       password: password,
     });
 
-    if (error) {
+    if (updateError) {
+      console.error("--> Error en updateUser:", updateError);
       throw new Error(
-        error.message ||
-          "No se pudo actualizar la contraseña. El enlace puede haber expirado.",
+        updateError.message || "No se pudo actualizar la contraseña.",
       );
     }
   }

@@ -344,33 +344,42 @@ export class AuthService {
 
   static async resetPassword(password: string, token: string): Promise<void> {
     if (!token) {
-      throw new Error("El token de recuperación es inválido o ha expirado.");
-    }
-
-    // 1. Establecer la sesión temporal con el access_token que viene del hash del correo
-    const { data: sessionData, error: sessionError } =
-      await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: "", // En flujos de recuperación no se requiere refresh_token
-      });
-
-    if (sessionError) {
-      console.error("--> Error en setSession:", sessionError);
       throw new Error(
-        "La sesión de recuperación ha expirado. Por favor solicita un nuevo correo.",
+        "El token de recuperación es inválido o no fue proporcionado.",
       );
     }
 
-    // 2. Actualizar la contraseña del usuario autenticado en la sesión
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: password,
-    });
+    // 1. Obtener la información del usuario a partir del access_token
+    const { data: userData, error: userError } =
+      await supabase.auth.getUser(token);
+
+    if (userError || !userData.user) {
+      console.error(
+        "--> Error al verificar token en resetPassword:",
+        userError,
+      );
+      throw new Error(
+        "El enlace de recuperación ha expirado o es inválido. Por favor solicita uno nuevo.",
+      );
+    }
+
+    const userId = userData.user.id;
+
+    // 2. Actualizar la contraseña del usuario de forma administrativa mediante su ID
+    const { error: updateError } = await supabase.auth.admin.updateUserById(
+      userId,
+      { password: password },
+    );
 
     if (updateError) {
-      console.error("--> Error en updateUser:", updateError);
+      console.error("--> Error en admin.updateUserById:", updateError);
       throw new Error(
         updateError.message || "No se pudo actualizar la contraseña.",
       );
     }
+
+    console.log(
+      `--> Contraseña actualizada con éxito para el usuario: ${userId}`,
+    );
   }
 }

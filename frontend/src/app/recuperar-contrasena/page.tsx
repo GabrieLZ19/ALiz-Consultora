@@ -11,6 +11,8 @@ import {
   KeyRound,
   CheckCircle2,
   Lock,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { AuthService } from "@/services/authService";
 import { notify } from "@/lib/notifications";
@@ -22,15 +24,18 @@ function RecoverPasswordForm() {
   const [accessToken, setAccessToken] = useState<string>("");
   const isResetMode = Boolean(accessToken);
 
-  // Detectar el token tanto en Query Params (?) como en el Hash de Supabase (#)
+  // Estados para togglear visibilidad de contraseñas
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+
+  // Detectar el token en Query Params (?) y en el Hash (#)
   useEffect(() => {
-    // 1. Intentar buscar en Query Params
     const tokenFromParams =
       searchParams.get("token") ||
       searchParams.get("code") ||
       searchParams.get("access_token");
 
-    // 2. Intentar buscar en el Hash (#access_token=...)
     let tokenFromHash = "";
     if (typeof window !== "undefined" && window.location.hash) {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -141,26 +146,48 @@ function RecoverPasswordForm() {
 
           {!isResetSuccess ? (
             <form className="space-y-4" onSubmit={handleResetSubmit}>
-              <div>
+              {/* CAMPO 1: NUEVA CONTRASEÑA */}
+              <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Nueva Contraseña (mín. 6 caracteres) *"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-brand-bg border border-custom/60 rounded-md px-4 py-3.5 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-brand-gold/60 transition-all"
+                  className="w-full bg-brand-bg border border-custom/60 rounded-md pl-4 pr-11 py-3.5 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-brand-gold/60 transition-all"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-brand-gold transition-colors p-1 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
 
-              <div>
+              {/* CAMPO 2: CONFIRMAR CONTRASEÑA */}
+              <div className="relative">
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirmar Nueva Contraseña *"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-brand-bg border border-custom/60 rounded-md px-4 py-3.5 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-brand-gold/60 transition-all"
+                  className="w-full bg-brand-bg border border-custom/60 rounded-md pl-4 pr-11 py-3.5 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-brand-gold/60 transition-all"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-brand-gold transition-colors p-1 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
+                </button>
               </div>
 
               <button

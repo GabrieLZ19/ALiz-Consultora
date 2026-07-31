@@ -3,22 +3,24 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 import dns from "dns";
 import { CreateLeadDTO } from "../types/lead";
 
-// Forzar la resolución DNS a preferir IPv4 sobre IPv6 (Evita ENETUNREACH en Render)
-dns.setDefaultResultOrder("ipv4first");
-
 const port = Number(process.env.SMTP_PORT) || 587;
 
-const smtpConfig: SMTPTransport.Options = {
+const smtpConfig: SMTPTransport.Options & { lookup?: any } = {
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: port,
-  secure: port === 465, // true para 465 (SSL), false para 587 (TLS/STARTTLS)
+  secure: port === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-  connectionTimeout: 10000,
+  // Intercepta el DNS para obligar a devolver solo la IP v4 de Gmail
+  lookup: (hostname: string, options: any, callback: any) => {
+    dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+      callback(err, address, family);
+    });
+  },
+  connectionTimeout: 15000,
 };
-
 const transporter = nodemailer.createTransport(smtpConfig);
 
 export class EmailService {

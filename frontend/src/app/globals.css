@@ -74,26 +74,71 @@ button,
 }
 
 /* ==========================================================================
-   CONFIGURACIÓN DE POSICIONAMIENTO DE SILEO (DESPLAZAMIENTO NAVBAR)
+   CONFIGURACIÓN Y OPTIMIZACIÓN DE SILEO TOAST (RESPONSIVE & MOBILE)
    ========================================================================== */
 
-/* Posicionamiento del Toaster de Sileo por debajo del Navbar sticky */
-[data-sileo-toaster],
-.sileo-toaster,
-div[data-sileo-toaster],
+:root {
+  --sileo-width: min(360px, calc(100vw - 1.5rem));
+}
+
+/* Posicionamiento por debajo del Navbar sticky en Desktop */
 [data-sileo-viewport] {
   z-index: 99999 !important;
   top: 5rem !important;
   right: 1.5rem !important;
+  max-width: calc(100vw - 2rem) !important;
 }
 
+/* Asegurar que las tarjetas de toast no desborden su contenedor */
+[data-sileo-toast] {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+[data-sileo-header] {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Evitar que el título o contenido se corte bruscamente */
+[data-sileo-title] {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: calc(100vw - 6rem) !important;
+  font-family: var(--font-sans) !important;
+  letter-spacing: 0.01em !important;
+}
+
+[data-sileo-description] {
+  color: var(--color-text-main) !important;
+  opacity: 0.9 !important;
+  font-family: var(--font-sans) !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Ajustes específicos para dispositivos móviles (pantallas pequeñas <= 640px) */
 @media (max-width: 640px) {
-  [data-sileo-toaster],
-  .sileo-toaster,
-  div[data-sileo-toaster],
   [data-sileo-viewport] {
-    top: 4.5rem !important;
-    right: 0.75rem !important;
-    left: 0.75rem !important;
+    top: 4.25rem !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 1.25rem) !important;
+    max-width: 420px !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+
+  [data-sileo-toast] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  [data-sileo-title] {
+    max-width: calc(100vw - 5rem) !important;
+    font-size: 0.825rem !important;
   }
 }
+

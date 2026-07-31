@@ -1,11 +1,18 @@
 import { supabase } from "../config/supabase";
-import { RegisterDTO, LoginDTO, AuthResponse, OAuthSyncDTO, UpdateProfileDTO } from "../types/auth";
+import {
+  RegisterDTO,
+  LoginDTO,
+  AuthResponse,
+  OAuthSyncDTO,
+  UpdateProfileDTO,
+} from "../types/auth";
 import { EmailService } from "./emailService";
 
 export class AuthService {
   static async register(data: RegisterDTO): Promise<AuthResponse> {
-    console.log("--> Registrando usuario en AuthService con confirmación:", data.email);
+    console.log("--> Registrando usuario en AuthService:", data.email);
 
+    // 1. Registro en Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
@@ -22,7 +29,9 @@ export class AuthService {
         msg.toLowerCase().includes("already registered") ||
         msg.toLowerCase().includes("user already exists")
       ) {
-        throw new Error("Este correo electrónico ya está registrado. Por favor inicia sesión.");
+        throw new Error(
+          "Este correo electrónico ya está registrado. Por favor inicia sesión.",
+        );
       }
       throw new Error(msg || "No se pudo registrar el usuario.");
     }
@@ -32,7 +41,9 @@ export class AuthService {
     }
 
     if (authData.user.identities && authData.user.identities.length === 0) {
-      throw new Error("Este correo electrónico ya se encuentra registrado. Por favor inicia sesión.");
+      throw new Error(
+        "Este correo electrónico ya se encuentra registrado. Por favor inicia sesión.",
+      );
     }
 
     const userId = authData.user.id;
@@ -43,6 +54,7 @@ export class AuthService {
         {
           id: userId,
           full_name: data.full_name,
+          email: data.email,
           company_name: data.company_name || null,
           phone: data.phone || null,
           avatar_url: data.avatar_url || null,
@@ -51,24 +63,25 @@ export class AuthService {
           subscription_status: "inactive",
         },
       ],
-      { onConflict: "id" }
+      { onConflict: "id" },
     );
 
     if (profileError) {
       console.warn("--> Aviso al upsert de perfil:", profileError.message);
     }
 
-    // 3. Notificación de bienvenida / confirmación por Nodemailer con plantilla ALiz
-    try {
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-      await EmailService.sendUserAccountConfirmation(
-        data.email,
-        data.full_name,
-        `${clientUrl}/login`
+    // 3. Notificación por Nodemailer (En SEGUNDO PLANO sin await para respuesta ultra rápida)
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+    EmailService.sendUserAccountConfirmation(
+      data.email,
+      data.full_name,
+      `${clientUrl}/login`,
+    ).catch((emailErr) => {
+      console.error(
+        "--> Error enviando correo de bienvenida con Nodemailer:",
+        emailErr,
       );
-    } catch (emailErr) {
-      console.warn("--> Aviso enviando correo Nodemailer post-registro:", emailErr);
-    }
+    });
 
     const token = authData.session?.access_token || "";
 
@@ -100,7 +113,9 @@ export class AuthService {
         throw new Error("Correo o contraseña incorrectos. Verifica tus datos.");
       }
       if (msg.toLowerCase().includes("email not confirmed")) {
-        throw new Error("Por favor confirma tu correo electrónico antes de ingresar.");
+        throw new Error(
+          "Por favor confirma tu correo electrónico antes de ingresar.",
+        );
       }
       throw new Error(msg || "Credenciales inválidas o correo no registrado.");
     }
@@ -121,7 +136,10 @@ export class AuthService {
       user: {
         id: authData.user.id,
         email: authData.user.email!,
-        full_name: profile?.full_name || authData.user.user_metadata?.full_name || "Usuario",
+        full_name:
+          profile?.full_name ||
+          authData.user.user_metadata?.full_name ||
+          "Usuario",
         role: profile?.role || "client",
         plan: profile?.plan || "none",
         company_name: profile?.company_name || null,
@@ -132,11 +150,17 @@ export class AuthService {
     };
   }
 
-  static async getOAuthUrl(provider: "google", redirectTo?: string): Promise<string> {
+  static async getOAuthUrl(
+    provider: "google",
+    redirectTo?: string,
+  ): Promise<string> {
     const defaultOrigin = process.env.CLIENT_URL || "http://localhost:3000";
     const redirectUrl = redirectTo || `${defaultOrigin}/login/callback`;
 
-    console.log("--> Generando URL de Google OAuth con redirectUrl:", redirectUrl);
+    console.log(
+      "--> Generando URL de Google OAuth con redirectUrl:",
+      redirectUrl,
+    );
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -151,7 +175,9 @@ export class AuthService {
 
     if (error || !data.url) {
       console.error("--> Error en getOAuthUrl:", error);
-      throw new Error(error?.message || "No se pudo obtener la URL de OAuth para Google.");
+      throw new Error(
+        error?.message || "No se pudo obtener la URL de OAuth para Google.",
+      );
     }
 
     return data.url;
@@ -159,7 +185,7 @@ export class AuthService {
 
   static async syncOAuthSession(dto: OAuthSyncDTO): Promise<AuthResponse> {
     const { data: userData, error: userError } = await supabase.auth.getUser(
-      dto.access_token
+      dto.access_token,
     );
 
     if (userError || !userData.user) {
@@ -198,7 +224,7 @@ export class AuthService {
               subscription_status: "inactive",
             },
           ],
-          { onConflict: "id" }
+          { onConflict: "id" },
         )
         .select()
         .single();
@@ -212,7 +238,10 @@ export class AuthService {
       user: {
         id: userId,
         email: user.email!,
-        full_name: profile?.full_name || user.user_metadata?.full_name || "Usuario OAuth",
+        full_name:
+          profile?.full_name ||
+          user.user_metadata?.full_name ||
+          "Usuario OAuth",
         role: profile?.role || "client",
         plan: profile?.plan || "none",
         company_name: profile?.company_name || null,
@@ -243,7 +272,8 @@ export class AuthService {
     };
 
     if (dto.full_name !== undefined) updateData.full_name = dto.full_name;
-    if (dto.company_name !== undefined) updateData.company_name = dto.company_name;
+    if (dto.company_name !== undefined)
+      updateData.company_name = dto.company_name;
     if (dto.phone !== undefined) updateData.phone = dto.phone;
     if (dto.avatar_url !== undefined) updateData.avatar_url = dto.avatar_url;
 
@@ -271,7 +301,9 @@ export class AuthService {
 
     if (error) {
       console.error("--> Error en getUserLeads:", error);
-      throw new Error(`Error al obtener las solicitudes del usuario: ${error.message}`);
+      throw new Error(
+        `Error al obtener las solicitudes del usuario: ${error.message}`,
+      );
     }
 
     return data || [];
@@ -279,16 +311,16 @@ export class AuthService {
 
   static async requestPasswordReset(email: string): Promise<void> {
     const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-    
-    // Enviar correo de restablecimiento directamente mediante Nodemailer sin pasar por los rate limits de Supabase Email
-    try {
-      await EmailService.sendPasswordResetEmail(
-        email,
-        `${clientUrl}/recuperar-contrasena/reset`
+
+    // Disparar en segundo plano para evitar bloqueos por latencia de red
+    EmailService.sendPasswordResetEmail(
+      email,
+      `${clientUrl}/recuperar-contrasena/reset`,
+    ).catch((e: any) => {
+      console.error(
+        "--> Error enviando email de recuperación por Nodemailer:",
+        e,
       );
-    } catch (e: any) {
-      console.error("--> Error enviando email de recuperación por Nodemailer:", e);
-      throw new Error("No se pudo enviar el correo de recuperación. Inténtalo de nuevo más tarde.");
-    }
+    });
   }
 }

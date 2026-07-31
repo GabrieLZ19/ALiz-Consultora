@@ -111,7 +111,11 @@ export class EmailService {
   /**
    * Envía correo de confirmación de cuenta de usuario con diseño editorial ALiz vía Nodemailer
    */
-  static async sendUserAccountConfirmation(email: string, fullName: string, confirmationLink: string) {
+  static async sendUserAccountConfirmation(
+    email: string,
+    fullName: string,
+    confirmationLink: string,
+  ) {
     const mailOptions = {
       from: `"ALiz Consultora" <${process.env.SMTP_USER}>`,
       to: email,

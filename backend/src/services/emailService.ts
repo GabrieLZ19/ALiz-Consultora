@@ -1,39 +1,24 @@
-import nodemailer from "nodemailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
-import dns from "dns";
+import { Resend } from "resend";
 import { CreateLeadDTO } from "../types/lead";
 
-const port = Number(process.env.SMTP_PORT) || 587;
+// Inicializar Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const smtpConfig: SMTPTransport.Options & { lookup?: any } = {
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: port,
-  secure: port === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  // Intercepta el DNS para obligar a devolver solo la IP v4 de Gmail
-  lookup: (hostname: string, options: any, callback: any) => {
-    dns.lookup(hostname, { family: 4 }, (err, address, family) => {
-      callback(err, address, family);
-    });
-  },
-  connectionTimeout: 15000,
-};
-const transporter = nodemailer.createTransport(smtpConfig);
+// Remitente por defecto (Lee de la variable de entorno RESEND_FROM_EMAIL. Si no existe, usa onboarding@resend.dev)
+const FROM_EMAIL =
+  process.env.RESEND_FROM_EMAIL || "ALiz Consultora <onboarding@resend.dev>";
 
 export class EmailService {
   /**
-   * Notifica al equipo de ALiZ (narpublisher@gmail.com) cuando llega un nuevo lead
+   * Notifica al equipo de ALiZ cuando llega un nuevo lead
    */
   static async sendNewLeadAlertToAdmin(leadData: CreateLeadDTO) {
     const adminEmail =
       process.env.ADMIN_NOTIFICATION_EMAIL || "narpublisher@gmail.com";
 
-    const mailOptions = {
-      from: `"ALiz Sistema Web" <${process.env.SMTP_USER}>`,
-      to: adminEmail,
+    return await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [adminEmail],
       subject: `NUEVA SOLICITUD WEB: ${leadData.full_name.toUpperCase()} - ${leadData.company_name ? leadData.company_name.toUpperCase() : "SIN EMPRESA"}`,
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
@@ -85,18 +70,16 @@ export class EmailService {
           </div>
         </div>
       `,
-    };
-
-    return await transporter.sendMail(mailOptions);
+    });
   }
 
   /**
    * Envía confirmación automática de recepción de diagnóstico al usuario
    */
   static async sendClientLeadConfirmation(email: string, fullName: string) {
-    const mailOptions = {
-      from: `"ALiz Soluciones de Negocios" <${process.env.SMTP_USER}>`,
-      to: email,
+    return await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [email],
       subject: "Confirmación de Recepción | ALiz Soluciones de Negocios",
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
@@ -115,22 +98,20 @@ export class EmailService {
           </div>
         </div>
       `,
-    };
-
-    return await transporter.sendMail(mailOptions);
+    });
   }
 
   /**
-   * Envía correo de confirmación de cuenta de usuario con diseño editorial ALiz vía Nodemailer
+   * Envía correo de confirmación de cuenta de usuario con diseño editorial ALiz
    */
   static async sendUserAccountConfirmation(
     email: string,
     fullName: string,
     confirmationLink: string,
   ) {
-    const mailOptions = {
-      from: `"ALiz Consultora" <${process.env.SMTP_USER}>`,
-      to: email,
+    return await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [email],
       subject: "Confirma tu cuenta de usuario | ALiz",
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
@@ -164,18 +145,16 @@ export class EmailService {
           </div>
         </div>
       `,
-    };
-
-    return await transporter.sendMail(mailOptions);
+    });
   }
 
   /**
-   * Envía correo de recuperación de contraseña vía Nodemailer
+   * Envía correo de recuperación de contraseña vía Resend API
    */
   static async sendPasswordResetEmail(email: string, resetLink: string) {
-    const mailOptions = {
-      from: `"ALiz Consultora" <${process.env.SMTP_USER}>`,
-      to: email,
+    return await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [email],
       subject: "Restablece tu contraseña | ALiz",
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b0a09; color: #efece6; padding: 40px 20px; border-radius: 4px; max-width: 600px; margin: 0 auto; border: 1px solid #231e18;">
@@ -209,8 +188,6 @@ export class EmailService {
           </div>
         </div>
       `,
-    };
-
-    return await transporter.sendMail(mailOptions);
+    });
   }
 }

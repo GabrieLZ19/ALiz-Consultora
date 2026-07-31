@@ -13,14 +13,14 @@ export default function QuienesSomosPage() {
             Nuestra Historia & Postura
           </span>
           <h1 className="text-4xl sm:text-5xl font-editorial leading-tight">
-            ALiZ nació de una convicción simple: <br />
+            ALiz nació de una convicción simple: <br />
             <span className="italic text-brand-gold font-light">
               el dueño de PYME merece asesoría real.
             </span>
           </h1>
           <p className="text-sm md:text-base text-text-muted font-light leading-relaxed">
             En México nos enseñaron que las reglas son para quienes no saben
-            cómo saltárselas. En ALiZ creemos que sí se puede hacer bien y que
+            cómo saltárselas. En ALiz creemos que sí se puede hacer bien y que
             un negocio ordenado no necesita tenerle miedo a nadie.
           </p>
           <div className="pt-2">

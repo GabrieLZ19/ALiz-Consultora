@@ -141,7 +141,7 @@ export default function LoginPage() {
           phone: phone || undefined,
           avatar_url: avatarUrl || undefined,
         });
-        notify.success("Cuenta creada exitosamente. ¡Bienvenido a ALiZ!");
+        notify.success("Cuenta creada exitosamente. ¡Bienvenido a ALiz!");
       } else {
         await login({ email, password });
         notify.success("Inicio de sesión exitoso.");
@@ -161,7 +161,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-brand-card/40 z-0" />
         <Image
           src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80"
-          alt="Atmósfera Editorial ALiZ"
+          alt="Atmósfera Editorial ALiz"
           fill
           className="object-cover opacity-40 mix-blend-overlay"
           priority
@@ -176,7 +176,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/10 border border-brand-gold/30 rounded-full text-brand-gold text-[10px] font-sans font-bold uppercase tracking-widest">
-            <Shield size={12} /> ALiZ Consultora
+            <Shield size={12} /> ALiz Consultora
           </div>
           <h2 className="text-4xl font-editorial font-light text-text-main leading-tight">
             Gestión Inteligente y <br />
@@ -191,7 +191,7 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 text-[10px] text-text-muted font-sans uppercase tracking-widest">
-          © {new Date().getFullYear()} ALiZ Consultora. Todos los derechos reservados.
+          © {new Date().getFullYear()} ALiz Consultora. Todos los derechos reservados.
         </div>
       </div>
 
@@ -210,7 +210,7 @@ export default function LoginPage() {
 
           <div className="space-y-2 text-center lg:text-left">
             <h1 className="text-3xl font-editorial font-light text-text-main">
-              {isRegisterMode ? "Crear Cuenta ALiZ" : "Acceso Ejecutivos ALiZ"}
+              {isRegisterMode ? "Crear Cuenta ALiz" : "Acceso Ejecutivos ALiz"}
             </h1>
             <p className="text-xs text-text-muted">
               {isRegisterMode
@@ -405,7 +405,7 @@ export default function LoginPage() {
               className="text-xs text-text-muted hover:text-text-main font-sans transition-colors cursor-pointer"
             >
               {isRegisterMode
-                ? "¿Ya tienes una cuenta ALiZ? Inicia Sesión"
+                ? "¿Ya tienes una cuenta ALiz? Inicia Sesión"
                 : "¿No tienes una cuenta? Regístrate aquí"}
             </button>
           </div>

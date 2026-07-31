@@ -126,7 +126,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-sm md:text-base text-text-muted font-light leading-relaxed max-w-2xl">
-              En México nadie nos enseñó a construir empresas con orden. ALiZ
+              En México nadie nos enseñó a construir empresas con orden. ALiz
               sí. Herramientas, políticas y consultoría especializada para que
               tu empresa opere correctamente - sin atajos.
             </p>
@@ -144,7 +144,7 @@ export default function Home() {
             <div className="w-full aspect-4/5 relative rounded-md overflow-hidden bg-brand-bg">
               <Image
                 src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80"
-                alt="Dirección ALiZ"
+                alt="Dirección ALiz"
                 fill
                 className="object-cover filter grayscale contrast-[1.15]"
                 priority
@@ -192,7 +192,7 @@ export default function Home() {
               <ShieldCheck size={14} /> Posicionamiento de Marca
             </div>
             <h2 className="text-3xl font-editorial text-text-main">
-              ¿Para quién es ALiZ Soluciones?
+              ¿Para quién es ALiz Soluciones?
             </h2>
             <ul className="space-y-4 text-xs md:text-sm font-light text-text-muted">
               <li className="flex items-start gap-3">
@@ -272,7 +272,7 @@ export default function Home() {
             02. Soluciones In-Company
           </span>
           <h2 className="text-3xl md:text-4xl font-editorial text-text-main">
-            ALiZ para tu organización.
+            ALiz para tu organización.
           </h2>
         </ScrollReveal>
         <ScrollReveal delay={200}>

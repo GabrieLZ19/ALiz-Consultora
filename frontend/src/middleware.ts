@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Proteger rutas del Panel de Administración (Exclusivo ALiZ)
+  // 2. Proteger rutas del Panel de Administración (Exclusivo ALiz)
   if (pathname.startsWith("/admin")) {
     if (!token || role !== "admin") {
       return NextResponse.redirect(new URL("/login", request.url));

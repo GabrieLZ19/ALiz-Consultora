@@ -212,7 +212,7 @@ export default function ProfilePage() {
         <div className="text-center space-y-4">
           <Loader2 className="mx-auto h-8 w-8 text-brand-gold animate-spin" />
           <p className="text-xs uppercase tracking-widest text-text-muted font-sans">
-            Cargando Perfil ALiZ...
+            Cargando Perfil ALiz...
           </p>
         </div>
       </main>
@@ -282,7 +282,7 @@ export default function ProfilePage() {
                 </h1>
                 <span className="px-2.5 py-0.5 bg-brand-gold/15 border border-brand-gold/30 text-brand-gold text-[9px] font-sans uppercase tracking-wider font-bold rounded-full">
                   {user.role === "admin"
-                    ? "Administrador ALiZ"
+                    ? "Administrador ALiz"
                     : "Cliente Corporativo"}
                 </span>
               </div>
@@ -358,7 +358,7 @@ export default function ProfilePage() {
                 </h2>
                 <p className="text-xs text-text-muted">
                   Accede a los e-books, políticas editables y plantillas
-                  adquiridas en ALiZ.
+                  adquiridas en ALiz.
                 </p>
               </div>
             </div>
@@ -586,7 +586,7 @@ export default function ProfilePage() {
                   </h3>
                   <p className="text-xs text-text-muted leading-relaxed">
                     Si deseas actualizar tu contraseña de acceso a la plataforma
-                    ALiZ, te enviaremos un correo seguro a{" "}
+                    ALiz, te enviaremos un correo seguro a{" "}
                     <strong>{user.email}</strong>.
                   </p>
                 </div>

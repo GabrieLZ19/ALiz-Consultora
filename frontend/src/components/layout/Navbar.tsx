@@ -66,7 +66,7 @@ export const Navbar = () => {
             <div className="relative w-28 h-8 lg:w-32 lg:h-9 flex items-center justify-center transition-transform hover:scale-105">
               <Image
                 src="/logo.png"
-                alt="ALiZ Soluciones"
+                alt="ALiz Soluciones"
                 width={120}
                 height={36}
                 className="object-contain"
@@ -288,7 +288,7 @@ export const Navbar = () => {
                         {user.email}
                       </p>
                       <span className="inline-block mt-1 px-2 py-0.5 bg-brand-gold/15 text-brand-gold text-[8px] font-mono uppercase font-semibold rounded">
-                        Cliente ALiZ
+                        Cliente ALiz
                       </span>
                     </div>
 
@@ -343,7 +343,7 @@ export const Navbar = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-custom/60 pb-4">
               <span className="text-[10px] font-mono uppercase tracking-widest text-brand-gold">
-                Menú ALiZ
+                Menú ALiz
               </span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}

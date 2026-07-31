@@ -11,7 +11,7 @@ export default function NotFound() {
         {/* NÚMERO Y BADGE */}
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/10 border border-brand-gold/30 rounded-full text-brand-gold text-[10px] font-sans font-bold uppercase tracking-widest">
-            <ShieldAlert size={12} /> ALiZ Consultora • Error 404
+            <ShieldAlert size={12} /> ALiz Consultora • Error 404
           </div>
 
           <h1 className="text-7xl sm:text-9xl font-editorial font-light text-brand-gold tracking-tight select-none">
@@ -26,7 +26,7 @@ export default function NotFound() {
           </h2>
           <p className="text-xs sm:text-sm text-text-muted leading-relaxed max-w-md mx-auto">
             La página o documento que intentas consultar no existe o ha sido
-            reubicada dentro del portal de servicios de ALiZ Consultora.
+            reubicada dentro del portal de servicios de ALiz Consultora.
           </p>
         </div>
 

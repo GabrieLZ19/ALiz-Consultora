@@ -140,7 +140,7 @@ function RecoverPasswordForm() {
             </h1>
             <p className="text-[11px] text-text-muted tracking-wide font-light leading-relaxed">
               Ingresa y confirma tu nueva contraseña para actualizar el acceso a
-              tu cuenta ALiZ.
+              tu cuenta ALiz.
             </p>
           </div>
 
@@ -226,7 +226,7 @@ function RecoverPasswordForm() {
               ¿Olvidaste tu contraseña?
             </h1>
             <p className="text-[11px] text-text-muted tracking-wide font-light leading-relaxed">
-              Ingresa el correo electrónico asociado a tu cuenta ALiZ y te
+              Ingresa el correo electrónico asociado a tu cuenta ALiz y te
               enviaremos las instrucciones para restablecerla.
             </p>
           </div>
@@ -299,7 +299,7 @@ export default function RecoverPasswordPage() {
         <div className="absolute inset-0 bg-brand-card/40 z-0" />
         <Image
           src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80"
-          alt="Atmósfera Editorial ALiZ"
+          alt="Atmósfera Editorial ALiz"
           fill
           className="object-cover opacity-40 mix-blend-overlay"
           priority

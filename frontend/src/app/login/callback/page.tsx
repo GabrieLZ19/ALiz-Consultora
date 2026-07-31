@@ -36,7 +36,7 @@ export default function AuthCallbackPage() {
 
         if (response.status === "success") {
           await refreshUser();
-          notify.success("¡Bienvenido a ALiZ!", "Sesión iniciada exitosamente.");
+          notify.success("¡Bienvenido a ALiz!", "Sesión iniciada exitosamente.");
           router.push("/");
         } else {
           setErrorMsg("No se pudo sincronizar la sesión.");
@@ -61,7 +61,7 @@ export default function AuthCallbackPage() {
               Completando inicio de sesión...
             </h2>
             <p className="text-xs text-text-muted font-mono tracking-wider uppercase">
-              Verificando credenciales con la infraestructura ALiZ
+              Verificando credenciales con la infraestructura ALiz
             </p>
           </>
         ) : (

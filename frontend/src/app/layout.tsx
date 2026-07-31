@@ -9,7 +9,7 @@ import { CartDrawer } from "@/components/features/CartDrawer";
 import { AppToaster } from "@/components/layout/AppToaster";
 
 export const metadata = {
-  title: "ALiZ | Estrategia Boutique Corporativa",
+  title: "ALiz | Estrategia Boutique Corporativa",
   description:
     "Reordenamos la arquitectura operativa y financiera de tu empresa.",
 };

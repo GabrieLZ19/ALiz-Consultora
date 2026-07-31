@@ -6,6 +6,11 @@ node_modules/
 frontend/.next/
 frontend/out/
 
+# Build outputs
+dist/
+**/dist/
+skills-lock.json
+
 # Variables de entorno / Secretos
 .env
 .env*.local

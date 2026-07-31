@@ -23,7 +23,7 @@ export default function ConsultoriaPage() {
             <span className="italic text-brand-gold font-light">Remota.</span>
           </h1>
           <p className="text-sm text-text-muted font-light leading-relaxed">
-            Más allá de los infoproductos digitalizados, ALiZ asume la operación
+            Más allá de los infoproductos digitalizados, ALiz asume la operación
             administrativa y de Recursos Humanos de tu empresa de forma remota.
           </p>
         </div>

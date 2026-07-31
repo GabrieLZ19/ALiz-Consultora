@@ -92,7 +92,7 @@ export default function ContactoPage() {
           <div className="lg:col-span-5 space-y-8 bg-brand-card/40 border border-custom/60 rounded-2xl p-8 flex flex-col justify-between">
             <div className="space-y-6">
               <h2 className="text-2xl font-editorial text-text-main">
-                ALiZ Soluciones de Negocios
+                ALiz Soluciones de Negocios
               </h2>
               <p className="text-xs text-text-muted leading-relaxed font-light">
                 Herramientas, políticas y consultoría especializada para que tu

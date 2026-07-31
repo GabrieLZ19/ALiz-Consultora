@@ -10,7 +10,7 @@ const FROM_EMAIL =
 
 export class EmailService {
   /**
-   * Notifica al equipo de ALiZ cuando llega un nuevo lead
+   * Notifica al equipo de ALiz cuando llega un nuevo lead
    */
   static async sendNewLeadAlertToAdmin(leadData: CreateLeadDTO) {
     const adminEmail =

@@ -51,13 +51,13 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
     environment: process.env.NODE_ENV || "development",
-    message: "API de ALiZ corriendo perfectamente",
+    message: "API de ALiz corriendo perfectamente",
   });
 });
 
 // Listener adaptativo
 app.listen(PORT, () => {
   console.log(
-    `Servidor de ALiZ ejecutándose en el puerto ${PORT} [${process.env.NODE_ENV || "development"}]`,
+    `Servidor de ALiz ejecutándose en el puerto ${PORT} [${process.env.NODE_ENV || "development"}]`,
   );
 });

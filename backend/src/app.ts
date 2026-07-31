@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import leadRoutes from "./routes/leadRoutes";
 import authRoutes from "./routes/authRoutes";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -54,6 +55,9 @@ app.get("/api/health", (req: Request, res: Response) => {
     message: "API de ALiz corriendo perfectamente",
   });
 });
+
+// Middleware Global de Manejo de Errores
+app.use(errorHandler);
 
 // Listener adaptativo
 app.listen(PORT, () => {

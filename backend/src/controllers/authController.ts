@@ -2,24 +2,27 @@ import { Request, Response } from "express";
 import { AuthService } from "../services/authService";
 import { RegisterDTO, LoginDTO, OAuthSyncDTO } from "../types/auth";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
+import {
+  RegisterSchema,
+  LoginSchema,
+  RequestPasswordResetSchema,
+  ResetPasswordSchema,
+  UpdateProfileSchema,
+} from "../types/schemas";
 
 export class AuthController {
   static async register(req: Request, res: Response): Promise<void> {
     try {
-      const registerDTO: RegisterDTO = req.body;
-
-      if (
-        !registerDTO.email ||
-        !registerDTO.password ||
-        !registerDTO.full_name
-      ) {
+      const parsed = RegisterSchema.safeParse(req.body);
+      if (!parsed.success) {
         res.status(400).json({
           status: "error",
-          message: "Los campos nombre, correo y contraseña son obligatorios.",
+          message: parsed.error.issues[0]?.message || "Datos de registro inválidos.",
         });
         return;
       }
 
+      const registerDTO: RegisterDTO = parsed.data as RegisterDTO;
       const result = await AuthService.register(registerDTO);
 
       res.status(201).json({
@@ -42,16 +45,16 @@ export class AuthController {
 
   static async login(req: Request, res: Response): Promise<void> {
     try {
-      const loginDTO: LoginDTO = req.body;
-
-      if (!loginDTO.email || !loginDTO.password) {
+      const parsed = LoginSchema.safeParse(req.body);
+      if (!parsed.success) {
         res.status(400).json({
           status: "error",
-          message: "El correo y la contraseña son requeridos.",
+          message: parsed.error.issues[0]?.message || "Datos de inicio de sesión inválidos.",
         });
         return;
       }
 
+      const loginDTO: LoginDTO = parsed.data;
       const result = await AuthService.login(loginDTO);
 
       res.status(200).json({
@@ -141,17 +144,16 @@ export class AuthController {
     res: Response,
   ): Promise<void> {
     try {
-      const { email } = req.body;
-
-      if (!email) {
+      const parsed = RequestPasswordResetSchema.safeParse(req.body);
+      if (!parsed.success) {
         res.status(400).json({
           status: "error",
-          message: "El correo electrónico es obligatorio.",
+          message: parsed.error.issues[0]?.message || "Correo electrónico requerido.",
         });
         return;
       }
 
-      await AuthService.requestPasswordReset(email);
+      await AuthService.requestPasswordReset(parsed.data.email);
 
       res.status(200).json({
         status: "success",
@@ -208,14 +210,16 @@ export class AuthController {
   ): Promise<void> {
     try {
       const userId = req.user.id;
-      const { full_name, company_name, phone, avatar_url } = req.body;
+      const parsed = UpdateProfileSchema.safeParse(req.body);
+      if (!parsed.success) {
+        res.status(400).json({
+          status: "error",
+          message: parsed.error.issues[0]?.message || "Datos de perfil inválidos.",
+        });
+        return;
+      }
 
-      const updatedProfile = await AuthService.updateProfile(userId, {
-        full_name,
-        company_name,
-        phone,
-        avatar_url,
-      });
+      const updatedProfile = await AuthService.updateProfile(userId, parsed.data);
 
       res.status(200).json({
         status: "success",
@@ -256,17 +260,16 @@ export class AuthController {
 
   static async resetPassword(req: Request, res: Response): Promise<void> {
     try {
-      const { password, token } = req.body;
-
-      if (!password || password.length < 6) {
+      const parsed = ResetPasswordSchema.safeParse(req.body);
+      if (!parsed.success) {
         res.status(400).json({
           status: "error",
-          message: "La contraseña debe tener al menos 6 caracteres.",
+          message: parsed.error.issues[0]?.message || "Datos de recuperación de contraseña inválidos.",
         });
         return;
       }
 
-      await AuthService.resetPassword(password, token);
+      await AuthService.resetPassword(parsed.data.new_password, parsed.data.token);
 
       res.status(200).json({
         status: "success",

@@ -1,16 +1,17 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/authController";
 import { requireAuth } from "../middleware/authMiddleware";
+import { authRateLimiter } from "../middleware/rateLimiter";
 
 const router = Router();
 
-// Endpoints Públicos
-router.post("/register", AuthController.register);
-router.post("/login", AuthController.login);
-router.post("/oauth-sync", AuthController.oauthSync);
+// Endpoints Públicos (Protegidos con Rate Limiting)
+router.post("/register", authRateLimiter, AuthController.register);
+router.post("/login", authRateLimiter, AuthController.login);
+router.post("/oauth-sync", authRateLimiter, AuthController.oauthSync);
 router.get("/oauth-url", AuthController.getOAuthUrl);
-router.post("/request-password-reset", AuthController.requestPasswordReset);
-router.post("/reset-password", AuthController.resetPassword);
+router.post("/request-password-reset", authRateLimiter, AuthController.requestPasswordReset);
+router.post("/reset-password", authRateLimiter, AuthController.resetPassword);
 
 // Endpoints Protegidos (Requieren Token JWT en Header)
 router.get("/me", requireAuth, AuthController.getMe);

@@ -315,12 +315,9 @@ export class AuthService {
     // Disparar en segundo plano para evitar bloqueos por latencia de red
     EmailService.sendPasswordResetEmail(
       email,
-      `${clientUrl}/recuperar-contrasena/reset`,
+      `${clientUrl}/recuperar-contrasena`,
     ).catch((e: any) => {
-      console.error(
-        "--> Error enviando email de recuperación por Nodemailer:",
-        e,
-      );
+      console.error("--> Error enviando email de recuperación por Resend:", e);
     });
   }
 }

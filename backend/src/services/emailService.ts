@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { CreateLeadDTO } from "../types/lead";
 
 const port = Number(process.env.SMTP_PORT) || 587;
@@ -6,12 +7,14 @@ const port = Number(process.env.SMTP_PORT) || 587;
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: port,
-  secure: port === 465, // true para 465, false para 587 (Nodemailer activa STARTTLS automáticamente)
+  secure: port === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-});
+  family: 4,
+  connectionTimeout: 10000,
+} as SMTPTransport.Options);
 
 export class EmailService {
   /**
